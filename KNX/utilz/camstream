@@ -1,0 +1,69 @@
+#!/usr/bin/env sh
+################################################################################
+# Prototype: webcam live stream with ffmpeg direted to a local icecast server.
+
+# An icecast server must be setup with the following minimal mount point
+# configuration:
+
+# <mount type="normal">
+#   <mount-name>/iot-lab</mount-name>
+#   <stream-name>KNX</stream-name>
+#   <max-listeners>1</max-listeners>
+#   <burst-size>65536</burst-size>
+#   <public>0</public>
+# </mount>
+################################################################################
+# globals
+_acard=
+_ihost=localhost
+_iport=8000
+_istream=iot-lab
+_vdevice=/dev/video0
+
+# ENV options
+ACARD=${ACARD:-${_acard}}
+IHOST=${IHOST:-${_ihost}}
+PORT=${PORT:-${_iport}}
+STREAM=${STREAM:-${_istream}}
+VDEVICE=${VDEVICE:-${_vdevice}}
+
+ffaudio_opts=
+[ "${ACARD}" ] && ffaudio_opts="-f alsa -ac 1 -i hw:${ACARD}"
+
+usage=$(cat <<EOF
+
+
+Usage:
+
+  [ENV OPTIONS] $0 USER PASSWORD
+
+where:
+
+  USER      User name for the icecast connection
+  PASSWORD  Password for the icecast connection
+
+ENV options
+
+  ACARD     ALSA audio (mic) card's ID for audio stream.
+            If indefined, audio streaming is disabled. Default: ${_acard}
+  IHOST     Icecast hostname. Default: ${_ihost}
+  PORT      Icecast port. Default: ${_iport}
+  STREAM    Icecast stream name. Default: ${_istream}
+  VDEVICE   v4l2 video device. Default: ${_vdevice}
+
+Examples:
+
+  $ VDEVICE=/dev/video1 camstream
+
+EOF
+)
+
+# CLI args
+user=${1:?"arg #1 missing: user name for the icecast connection. ${usage}"}
+password=${2:?"arg #2 missing: password for the icecast connection. ${usage}"}
+
+ffmpeg ${ffaudio_opts} -f v4l2 -video_size 640x480 -framerate 25 -i ${VDEVICE} \
+       -f webm -cluster_size_limit 2M -cluster_time_limit 5100 \
+       -content_type video/webm -c:v libvpx -b:v 500K -crf 30 -g 100 \
+       -deadline good -threads 4 \
+       icecast://${user}:${password}@${IHOST}:${PORT}/${STREAM}

@@ -1,0 +1,11 @@
+{"rooms":
+	[{"id":"32753","name":"salon",
+	"blinds":["1","2"],
+	"radiators":["1","2"],
+	"dimmer_num":6},
+	{"id":"57473",
+	"name":"cuisine",
+	"blinds":["10","11"],
+	"radiators":["10","11"],
+	"dimmer_num":6}]
+}
