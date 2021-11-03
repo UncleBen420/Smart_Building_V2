@@ -37,5 +37,16 @@ node zwave_simulator.js
 # for azure:
 
 you need to run the azure listener. It listen on all the data topics and cast them into the right format for iot hub
-you also need to setup mosquitto configuration to send the data to iot hub
+you also need to setup mosquitto configuration as a bridge to send the data to iot hub.
 
+copy the mosquitto.conf file in your own mosquitto.conf file
+And you also need to replace the fields with your own.
+
+You need to generate a sas token to access your device on the cloud.
+Use this command:
+
+az iot hub generate-sas-token -d YOUR_DEVICE_ID -n YOUR_IOT_HUB_NAME
+
+after this restart your broker mosquitto and the run the azure_listener
+
+node azure_lisener.js

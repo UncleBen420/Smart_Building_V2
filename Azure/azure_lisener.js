@@ -37,5 +37,5 @@ client.on('message', (topic, message) => {
 
 
 function handleMessage (message) {
-	client.publish('devices/' + message.messageId + '/messages/events/',  JSON.stringify(message))	
+	client.publish('devices/azure_device/messages/events/',  JSON.stringify(message))	
 }
