@@ -1,13 +1,12 @@
-// garage.js
 const mqtt = require('mqtt')
 const { spawnSync } = require("child_process");
 const config = require('../config/default.json');
 const db = require('../config/local_database.json');
 
-
+// for local broker
 var options = {
     port: config.server.port_mqtt,
-    clientId: 'azure_listener',
+    clientId: 'google_listener',
     username: config.server.mqtt_user,
     password: config.server.mqtt_password,
 

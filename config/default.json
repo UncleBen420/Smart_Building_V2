@@ -2,11 +2,11 @@
 	"server": {
 		"port": 8083,
 		"port_beacon_REST": 8082,
-		"address_zwave" : "192.168.0.15",
+		"address_zwave" : "192.168.178.25",
 		"port_zwave" : 5000,
 		"PATH_knx": "../KNX/knx_client_script.py",
 		"port_mqtt":1883,
-		"url_mqtt":"mqtt://192.168.0.15",
+		"url_mqtt":"mqtt://192.168.178.25",
 		"mqtt_user": "mqtt_user",
 		"mqtt_password":"mqtt"
 	}

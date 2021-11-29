@@ -15,14 +15,16 @@ var options_zwave_post = {
   hostname: config.server.address_zwave,
   port: config.server.port_zwave,
 }
+// for aws and azure
+
 var options = {
     port: config.server.port_mqtt,
     clientId: 'zwave',
     username: config.server.mqtt_user,
     password: config.server.mqtt_password,
-
 };
 const client = mqtt.connect(config.server.url_mqtt, options)
+
 
 client.on('connect', () => {
 console.log("is connected")
@@ -93,6 +95,7 @@ function intervalFunc() {
 
 	db.rooms.forEach(function(room, index){
 	console.log(room.dimmer_num)
+	
 	options_zwave.method = "GET"
 	options_zwave.path = '/sensor/' + room.dimmer_num + '/readings'
 	const req = http.request(options_zwave, res => {
