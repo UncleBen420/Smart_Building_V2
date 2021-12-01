@@ -1,4 +1,3 @@
-// garage.js
 const mqtt = require('mqtt')
 const { spawnSync } = require("child_process");
 const config = require('../config/default.json');
@@ -17,8 +16,7 @@ const client = mqtt.connect(config.server.url_mqtt, options)
 client.on('connect', () => {
 console.log("is connected")
   client.subscribe('radiator/control')
-  
-  // Inform controllers that garage is connected
+
   client.publish('radiator/connected', 'true')
 })
 
@@ -70,9 +68,7 @@ function handleControlRequest (message) {
 }
 
 
-/**
- * Want to notify controller that garage is disconnected before shutting down
- */
+// if the device is disconnected
 function handleAppExit (options, err) {
   if (err) {
     console.log(err.stack)

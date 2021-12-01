@@ -17,13 +17,13 @@ client.on('connect', () => {
 console.log("is connected")
   client.subscribe('data/#')
   
-  // Inform controllers that garage is connected
   client.publish('azure_listener/connected', 'true')
 })
 
 client.on('message', (topic, message) => {
   console.log('received message %s %s', topic, message)
   switch (topic) {
+  // We use specific case to ensure only right data are send
     case 'data/radiator':
       return handleMessage(JSON.parse(message))
     case 'data/blind':
@@ -36,5 +36,6 @@ client.on('message', (topic, message) => {
 
 
 function handleMessage (message) {
+	// the message a transfert to azure iot hub
 	client.publish('devices/azure_device/messages/events/',  JSON.stringify(message))	
 }

@@ -1,4 +1,3 @@
-// garage.js
 const mqtt = require('mqtt')
 const { spawnSync } = require("child_process");
 const config = require('../config/default.json');
@@ -6,17 +5,19 @@ const db = require('../config/local_database.json');
 const http = require('http')
 const http_post = require('http')
 
+// used to communicate with zwave REST api with get request
 var options_zwave = {
   hostname: config.server.address_zwave,
   port: config.server.port_zwave,
 }
 
+// used to communicate with zwave REST api with post request
 var options_zwave_post = {
   hostname: config.server.address_zwave,
   port: config.server.port_zwave,
 }
-// for aws and azure
 
+// mqtt option
 var options = {
     port: config.server.port_mqtt,
     clientId: 'zwave',
@@ -25,18 +26,18 @@ var options = {
 };
 const client = mqtt.connect(config.server.url_mqtt, options)
 
-
+// when the client is connect to the broker
 client.on('connect', () => {
 console.log("is connected")
   client.subscribe('zwave/control')
   
-  // Inform controllers that garage is connected
   client.publish('zwave/connected', 'true')
 })
 
 client.on('message', (topic, message) => {
   console.log('received message %s %s', topic, message)
   switch (topic) {
+  // if we have an upcoming command
     case 'zwave/control':
       return handleControlRequest(message)
   }
@@ -46,13 +47,15 @@ client.on('message', (topic, message) => {
 // this function is called when an control instruction is received
 function handleControlRequest (message) {
 
+	// Post a new dimmer value
 	options_zwave_post.method = "POST"
 	options_zwave_post.path = '/dimmer/set_level'
 	options_zwave_post.headers = {
         'Content-Type': 'application/json',
         'Content-Length': message.length
-    }
+    	}
 	
+	// we get the response from the server
 	callback = function(response) {
 	  var str = ''
 	  response.on('data', function (chunk) {
@@ -64,7 +67,7 @@ function handleControlRequest (message) {
 	  });
 	}
 
-
+	// do the request
 	var req = http_post.request(options_zwave_post, callback);
 	//This is the data we are posting, it needs to be a string or a buffer
 	req.write(message);
@@ -96,26 +99,17 @@ function intervalFunc() {
 	db.rooms.forEach(function(room, index){
 	console.log(room.dimmer_num)
 	
+	// use http to get the sensor value
 	options_zwave.method = "GET"
 	options_zwave.path = '/sensor/' + room.dimmer_num + '/readings'
 	const req = http.request(options_zwave, res => {
 		res.on("data", function(chunk) {
 		console.log("BODY: " + chunk)
 		
-		ret = JSON.parse(chunk)
+		// the data are already casted so they are directly send
+		client.publish('data/zwave', chunk)
 		
-		var data = JSON.stringify({
-			"messageId" : "zwave",
-			"time" : new Date(),
-			"temperature" : ret.temperature,
-			"luminance" : ret.luminance,
-			"humidity" : ret.humidity,
-			"sensor" : ret.sensor,
-			"id_room" : room.id})
-		
-		client.publish('data/zwave', data)
-		
-		console.log(data);
+//		console.log(chunk);
 		})
 	})
 		
@@ -128,9 +122,6 @@ function intervalFunc() {
 // data are send each 5 seconds
 setInterval(intervalFunc, 5000);
 
-/**
- * Handle the different ways an application can shutdown
- */
 process.on('exit', handleAppExit.bind(null, {
   cleanup: true
 }))

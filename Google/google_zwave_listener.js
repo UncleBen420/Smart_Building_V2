@@ -6,7 +6,9 @@ const db = require('../config/local_database.json');
 const jwt = require('jsonwebtoken');
 const {readFileSync} = require('fs');
 
-// for google
+// We need to have 2 client mqtt because the broker mosquitto cannot communicate in bridge mode unlike azure or aws
+//-----------------------------------------------------------------------------------------------
+// for google mqtt
 const projet_id = "my-first-project-326708"
 const registery_id = "Smartbuild"
 const device_id = "zwave2"
@@ -46,7 +48,7 @@ const options_google = {
 };
 topic_publish = '/devices/'+device_id+'/events'
 const client_google = mqtt.connect(options_google);
-
+//-----------------------------------------------------------------------------------------------
 
 // for local broker
 var options = {
@@ -77,8 +79,10 @@ client_local.on('message', (topic, message) => {
   switch (topic) {
     case 'data/zwave':
       return handleMessage(JSON.parse(message))
+    default:
+      console.log("topic not found")
   }
-  console.log("topic not found")
+
 })
 
 

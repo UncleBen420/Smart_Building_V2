@@ -6,7 +6,9 @@ const db = require('../config/local_database.json');
 const jwt = require('jsonwebtoken');
 const {readFileSync} = require('fs');
 
-// for google
+// We need to have 2 client mqtt because the broker mosquitto cannot communicate in bridge mode unlike azure or aws
+//-----------------------------------------------------------------------------------------------
+// for google mqtt
 const projet_id = "my-first-project-326708"
 const registery_id = "Smartbuild"
 const device_id = "KNX"
@@ -32,6 +34,7 @@ const createJwt = (projectId, privateKeyFile, algorithm) => {
   return jwt.sign(token, privateKey, {algorithm: algorithm});
 };
  
+ 
 client_id = 'projects/'+ projet_id +'/locations/'+ region +'/registries/'+ registery_id +'/devices/'+device_id
 
 const options_google = {
@@ -44,9 +47,11 @@ const options_google = {
   secureProtocol: 'TLSv1_2_method',
   ca: [readFileSync(serverCertFile)],
 };
+
+// the topic for google as a specific style
 topic_publish = '/devices/'+device_id+'/events'
 const client_google = mqtt.connect(options_google);
-
+//-----------------------------------------------------------------------------------------------
 
 // for local broker
 var options = {
@@ -61,6 +66,8 @@ const client_local = mqtt.connect(config.server.url_mqtt, options)
 
 client_local.on('connect', () => {
 console.log("is connected")
+
+  // we subscribe to all the data
   client_local.subscribe('data/#')
   
   // Inform controllers that garage is connected

@@ -1,4 +1,5 @@
 #!/bin/bash
+node fonctionality.js &
 node blind_device.js &
 node radiator_device.js &
 node zwave_device.js &
