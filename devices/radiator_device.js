@@ -103,7 +103,6 @@ function intervalFunc() {
 	// format of the message
 	var data = JSON.stringify({
 		messageId: "radiator",
-		time:new Date(),
 		radiator_number:radiator,
 		value:num,
 		room_id:room.id

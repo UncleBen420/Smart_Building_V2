@@ -104,7 +104,6 @@ function intervalFunc() {
 	// format of the message
 	var data = JSON.stringify({
 		messageId: "blind",
-		time:new Date(),
 		blind_number:blind,
 		value:num,
 		room_id:room.id

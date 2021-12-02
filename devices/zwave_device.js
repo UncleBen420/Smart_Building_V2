@@ -70,6 +70,7 @@ function handleControlRequest (message) {
 	// do the request
 	var req = http_post.request(options_zwave_post, callback);
 	//This is the data we are posting, it needs to be a string or a buffer
+	
 	req.write(message);
 	req.end();
 
@@ -97,11 +98,11 @@ function handleAppExit (options, err) {
 function intervalFunc() {
 
 	db.rooms.forEach(function(room, index){
-	console.log(room.dimmer_num)
+	console.log(room.sensor_num)
 	
 	// use http to get the sensor value
 	options_zwave.method = "GET"
-	options_zwave.path = '/sensor/' + room.dimmer_num + '/readings'
+	options_zwave.path = '/sensor/' + room.sensor_num + '/readings'
 	const req = http.request(options_zwave, res => {
 		res.on("data", function(chunk) {
 		console.log("BODY: " + chunk)

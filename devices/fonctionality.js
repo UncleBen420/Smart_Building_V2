@@ -79,35 +79,30 @@ client.on('message', (topic, message) => {
         console.log("fonctionality/commands")
         data = JSON.parse(message)
         commands = data.commands
-        zwave_connected = true
       	break;
       	
     case 'fonctionality/temperature_threshold_low':
         console.log("fonctionality/temperature_threshold_low")
         data = JSON.parse(message)
         temperature_threshold_low = data.temperature_threshold
-        zwave_connected = true
       	break;
       	
     case 'fonctionality/temperature_threshold_high':
         console.log("fonctionality/temperature_threshold_high")
         data = JSON.parse(message)
         temperature_threshold_high = data.temperature_threshold
-        zwave_connected = true
       	break;
       	
     case 'fonctionality/luminance_threshold':
         console.log("fonctionality/luminance_threshold")
         data = JSON.parse(message)
         luminance_threshold = data.luminance_threshold
-        zwave_connected = true
       	break;
       	
     case 'fonctionality/humidity_threshold':
         console.log("fonctionality/humidity_threshold")
         data = JSON.parse(message)
         humidity_threshold = data.humidity_threshold
-        zwave_connected = true
       	break;
 
     case 'data/room':
@@ -120,9 +115,9 @@ client.on('message', (topic, message) => {
     case 'data/zwave':
         console.log("data/zwave")
         data = JSON.parse(message)
-        var luminance = data.luminance;
-	var temperature = data.temperature;
-	var humidity = data.humidity;	
+        var luminance = data["Luminance"];
+	var temperature = data["Temperature"];
+	var humidity = data["Relative Humidity"];	
 	console.log(luminance + " " + temperature + " " + humidity)
       	break;
     default:

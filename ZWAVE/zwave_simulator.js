@@ -12,15 +12,17 @@ app.get('/sensor/6/readings', function(req, res){
 	console.log("GET request incoming");
 	
 	var data = {
-  "battery": 100,
-  "controller": "Pi lab1",
-  "humidity": 22,
-  "location": "Room A401",
-  "luminance": 60,
-  "motion": false,
-  "sensor": 6,
-  "temperature": 30.0,
-  "updateTime": 1454682568
+  "Alarm Level": 0, 
+  "Alarm Type": 0, 
+  "Battery Level": 100, 
+  "Burglar": 8, 
+  "Luminance": 135.0, 
+  "Relative Humidity": 31.0, 
+  "Sensor": false, 
+  "SourceNodeId": 0, 
+  "Temperature": 25.200000762939453, 
+  "Ultraviolet": 0.0
+
 };
 
 
